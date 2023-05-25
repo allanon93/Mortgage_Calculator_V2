@@ -1,0 +1,102 @@
+Public Class Form2
+
+    Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        CenterToScreen()
+    End Sub
+
+    Private Sub btnTotalMortgageCalculate_Click(sender As Object, e As EventArgs) Handles btnTotalMortgageCalculate.Click
+
+        Dim MonthlyIncome As Double
+        Dim MonthlyExpenses As Double
+
+        ' Check if txtMonthlyIncome.Text is both numeric and positive
+        If IsNumeric(txtMonthlyIncome.Text()) = True Then
+            If txtMonthlyIncome.Text() > 0 Then
+                MonthlyIncome = txtMonthlyIncome.Text()
+            Else
+                MessageBox.Show("Please enter a positive number.",
+                            "Input Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
+                Exit Sub
+            End If
+        Else
+            MessageBox.Show("Please enter numbers only.",
+                            "Input Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
+            Exit Sub
+        End If
+
+        ' Check if txtMonthlyExpenses.Text is both numeric and positive
+        If IsNumeric(txtMonthlyExpenses.Text()) = True Then
+            If txtMonthlyExpenses.Text() > 0 Then
+                MonthlyExpenses = txtMonthlyExpenses.Text()
+            Else
+                MessageBox.Show("Please enter a positive number.",
+                                "Input Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error)
+                Exit Sub
+            End If
+        Else
+            MessageBox.Show("Please enter numbers only.",
+                            "Input Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
+            Exit Sub
+        End If
+
+        ' Check to see if Income is greater than Expenses
+        If MonthlyIncome < MonthlyExpenses Then
+            MessageBox.Show("Please ensure that your income is greater than your expenses.",
+                            "Input Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
+            Exit Sub
+        End If
+
+        Dim DTI As Double
+        Dim DTIRound As Double
+
+        ' Calculate DTI and DTI as rounded number
+        DTI = MonthlyExpenses / MonthlyIncome
+        DTIRound = Math.Round(DTI, 2) * 100
+
+        ' If DTI is greater than 43% show educational message about possible denial
+        If DTI >= 0.43 Then
+            MessageBox.Show("Your debt to income ratio is " & DTIRound & "%." &
+                            vbCrLf & vbCrLf &
+                            "Generally, you will need a debt-to-income ratio below 43% to be approved for a home loan.",
+                            "Debt-to-Income Ratio Too High",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning)
+        End If
+
+        ' If DTI is satisfactory show message about mortgage potentials
+        If DTI < 0.43 And DTI > 0 Then
+
+            ' Create Income BEFORE and AFTER Expenses variables
+            Dim HousingBudgetBeforeExpenses As Double
+            Dim HousingBudgetAfterExpenses As Double
+            HousingBudgetBeforeExpenses = MonthlyIncome * 0.3
+            HousingBudgetAfterExpenses = (MonthlyIncome - MonthlyExpenses) * 0.3
+
+            MessageBox.Show("NOTE: Generally, your total incomed alloted for housing is 30% BEFORE expenses." &
+                            vbCrLf & vbCrLf &
+                            "Your estimated mortgage potential BEFORE expenses is: " & FormatCurrency(HousingBudgetBeforeExpenses) &
+                            vbCrLf & vbCrLf &
+                            "Your estimated mortgage potential AFTER expenses is: " & FormatCurrency(HousingBudgetAfterExpenses),
+                            "Estimated Mortgage Potential",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+        End If
+
+    End Sub
+
+    Private Sub btnTotalMortgageClear_Click(sender As Object, e As EventArgs) Handles btnTotalMortgageClear.Click
+        txtMonthlyIncome.Clear()
+        txtMonthlyExpenses.Clear()
+    End Sub
+
+End Class
